@@ -1,13 +1,16 @@
 package dz.minagri.stat.security.entity;
 
-import dz.minagri.stat.location.entity.Commune;
-import dz.minagri.stat.location.entity.Wilaya;
-import dz.minagri.stat.location.entity.Zone;
+import dz.minagri.stat.customer.entity.CarteFellah;
+import dz.minagri.stat.customer.entity.Exploitant;
+import dz.minagri.stat.customer.enumeration.ExploitStatus;
+import dz.minagri.stat.customer.enumeration.ExploitantStatus;
+import dz.minagri.stat.customer.enumeration.Gender;
+import dz.minagri.stat.customer.repository.CarteFellahRepository;
+import dz.minagri.stat.customer.repository.ExploitantRepository;
+import dz.minagri.stat.customer.service.CarteFellahService;
+import dz.minagri.stat.location.entity.*;
 import dz.minagri.stat.location.enumeration.TypeCommune;
-import dz.minagri.stat.location.repository.AddressRepository;
-import dz.minagri.stat.location.repository.CommuneRepository;
-import dz.minagri.stat.location.repository.WilayaRepository;
-import dz.minagri.stat.location.repository.ZoneRepository;
+import dz.minagri.stat.location.repository.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,26 +18,16 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Random;
+
 @Component
 public class SetupDataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
-    private boolean alreadySetup = false;
-
-    @Autowired
-    private ZoneRepository zRepo;
-    @Autowired
-    private WilayaRepository wRepo;
-    @Autowired
-    private CommuneRepository cRepo;
-    @Autowired
-    private AddressRepository adRepo;
-
-    @PersistenceContext
-    private EntityManager entityManager;
-
-   // @Autowired
-    //private PasswordEncoder passwordEncoder;
-    // API
+    private static final int DIGIT_COUNT = 12;
     private static final String cames[] = new String[]{"Biskra", "Oumache", "Branis", "Chetma", "Ouled Djellal", "Ras El Miaad", "Besbes", "Sidi Khaled",
             "Doucen", "Ech Chaïba", "Sidi Okba", "M'Chouneche", "El Haouch", "Aïn Naga", "Zeribet El Oued", "El Feidh", "El Kantara",
             "Aïn Zaatout", "El Outaya", "Djemorah", "Tolga", "Lioua", "Lichana", "Ourlal", "M'Lili", "Foughala", "Bordj Ben Azzouz", "El Mizaraa", "Bouchagroune"
@@ -45,14 +38,17 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             , "4101", "2187", "8866", "2175", "18718", "5941", "211980", "2121", "78870", "285000", "4115", "1356", "3339", "159000"
             , "3152", "54573", "9811", "4541", "1605", "9373", "4891", "29950", "2379", "86105", "4870"
     };
-
     private static final String cwil[] = new String[]{"ADRAR", "CHLEF", "LAGHOUAT", "OUM EL BOUAGHI", "BATNA", "BEJAIA", "BISKRA", "BECHAR",
             "BLIDA", "BOUIRA", "TAMANRASSET", "TEBESSA", "TLEMCEN", "TIARET", "TIZI OUZOU", "ALGER", "DJELFA", "JIJEL",
             "SETIF", "SAIDA", "SKIKDA", "SIDI BEL ABBES", "ANNABA", "GUELMA", "CONSTANTINE", "MEDEA", "MOSTAGANEM", "M’SILA", "MASCARA", "OUARGLA"
             , "ORAN", "EL BAYADH", "ILLIZI", "BORDJ BOU ARRERIDJ", "BOUMERDES", "EL TARF", "TINDOUF", "TISSEMSILT", "EL OUED", "KHENCHELA"
             , "SOUK AHRAS", "TIPAZA", "MILA", "AIN DEFLA", "NAAMA", "AIN TEMOUCHENT", "GHARDAIA", "RELIZANE"
     };
-
+    /**
+     * private static final String codWil[] = new String[]{
+     * "100","200","300","400","500","600","800","900","1000","1100","1200","1300","1400","1500","1700","1800","1900","2000","2100","2200","2300","2400","2500","2600","2700","2800","2900","3000","3100","3200","3300","3400","3500","3600","3700","3800","3900","4000","4100","4200","4300","4400","4500","4600","4700","4800","700","1600"
+     * };
+     */
     private static final String comAl[] = new String[]{"Alger-Centre", "Sidi M'Hamed", "El Madania", "Belouizdad", "Bab El Oued", "Bologhine", "Casbah",
             "Oued Koriche", "Bir Mourad Raïs", "El Biar", "Bouzareah", "Birkhadem", "El Harrach", "Baraki", "Oued Smar", "Bachdjerrah", "Hussein Dey", "Kouba"
             , "Bourouba", "Dar El Beïda", "Bab Ezzouar", "Ben Aknoun", "Dely Ibrahim", "El Hammamet", "Raïs Hamidou", "Djasr Kasentina", "El Mouradia", "Hydra"
@@ -74,8 +70,47 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             "MELON-D'EAU", "CANTALOUP", "PASTEQUE", "ARTICHAUT", "PIMENT", "POIVRON", "CONCOMBRE", "COURGETTE", "AUBERGINE", "CHOUXVERT", "CHOUXFLEUR"
             , "NAVET", "AIL", "PETITSPOIS", "FENOUIL", "SALAD", "BETRAVE", "FRAISE", "CELERIE", "CITROULLE", "PERCILE", "EPINARD"
     };
+    // @Autowired
+    //private PasswordEncoder passwordEncoder;
+    // API
+    LocalDate presentDate = LocalDate.now();
+    DateTimeFormatter dateFormatter
+            = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
+    private boolean alreadySetup = false;
+    @Autowired
+    private ZoneRepository zRepo;
+    @Autowired
+    private CarteFellahRepository cfRepo;
+    @Autowired
+    private CarteFellahService carteFellahService;
+    @Autowired
+    private WilayaRepository wRepo;
+    @Autowired
+    private CommuneRepository cRepo;
+    @Autowired
+    private AddressRepository adRepo;
+    @Autowired
+    private ExploitantRepository exploitatRepo;
+    @Autowired
+    private ExploitRepository exploitRepo;
+    @Autowired
+    private ExploitationRepository expltionRepo;
+    @PersistenceContext
+    private EntityManager entityManager;
 
+    public static String generateUniqueId() {
+        long timestamp = System.nanoTime();
+        String uniqueId = String.valueOf(timestamp);
 
+        // Ensure the unique ID has the desired 12-digit length
+        if (uniqueId.length() < DIGIT_COUNT) {
+            uniqueId = String.format("%0" + DIGIT_COUNT + "d", timestamp);
+        } else if (uniqueId.length() > DIGIT_COUNT) {
+            uniqueId = uniqueId.substring(0, DIGIT_COUNT);
+        }
+
+        return uniqueId;
+    }
 
     @Override
     @Transactional
@@ -85,37 +120,41 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         }
 
         // == create initial user
-       // createUserIfNotFound("test@test.com", "admin", "admin", "admin", "admin");
+        // createUserIfNotFound("test@test.com", "admin", "admin", "admin", "admin");
 
         // == create initial user technician
-     //   createUserIfNotFound("user@user1.com", "user1", "user1", "user1", "admin");
+        //   createUserIfNotFound("user@user1.com", "user1", "user1", "user1", "admin");
 
 
         createZones();
         //  createAddress();
-
+        createFellah();
+        createExploitant();
+        createExploitantion();
+        LinkExpoit();
+        linkFellahExploitant();
         alreadySetup = true;
     }
 
-  /*  @Transactional
-    User createUserIfNotFound(final String email, final String userName, final String firstName, final String lastName, final String password) {
-        User user = userRepository.findByEmail(email);
-        if (user == null) {
-            user = new User();
-            user.setFirstName(firstName);
-            user.setLastName(lastName);
-            user.setUserName(userName);
-            user.setPassword(passwordEncoder.encode(password));
-            user.setEmail(email);
-            user.setEnabled(true);
-            user.setAvailable(true);
-            user.setRegisterDate(LocalDate.now());
-            user.setColor("#3f51b5");
-        }
-        user = userRepository.save(user);
-        return user;
-    }
-*/
+    /*  @Transactional
+      User createUserIfNotFound(final String email, final String userName, final String firstName, final String lastName, final String password) {
+          User user = userRepository.findByEmail(email);
+          if (user == null) {
+              user = new User();
+              user.setFirstName(firstName);
+              user.setLastName(lastName);
+              user.setUserName(userName);
+              user.setPassword(passwordEncoder.encode(password));
+              user.setEmail(email);
+              user.setEnabled(true);
+              user.setAvailable(true);
+              user.setRegisterDate(LocalDate.now());
+              user.setColor("#3f51b5");
+          }
+          user = userRepository.save(user);
+          return user;
+      }
+  */
     @Transactional
     public void createZones() {
 
@@ -177,8 +216,6 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             commorl.addZone(zn);
         }
         cRepo.save(commorl);
-
-
     }
 
     @Transactional
@@ -244,5 +281,92 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         cRepo.save(commorl);
 
 
+    }
+
+    public void createFellah() {
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < cwil.length; j++) {
+                Wilaya wilaya = wRepo.findOneBynomWilaya(cwil[j]);
+                String uniqueId = generateUniqueId();
+                CarteFellah cfh = new CarteFellah();
+                String s12 = java.security.SecureRandom.class.getName();
+                cfh.setWilaya(wilaya);
+                cfh.setNationalS12(uniqueId);
+                cfh.setRegistrationDate(LocalDate.now());
+                cfRepo.save(cfh);
+            }
+        }
+    }
+
+    public void createExploitant() {
+        for (int j = 0; j < cwil.length; j++) {
+            Exploitant exploitant = new Exploitant();
+            exploitant.setBirthday(LocalDate.of(1981, 01, 01));
+            exploitant.setExploitantStatus(ExploitantStatus.ACTIVE);
+            exploitant.setGender(Gender.MR);
+            exploitant.setFirstname("MASSAOUD" + j);
+            exploitant.setLastname("MECHRY");
+            exploitant.setRegistrationDate(LocalDate.now());
+            exploitatRepo.save(exploitant);
+        }
+    }
+
+    public void createExploitantion() {
+        for (int j = 0; j < cwil.length; j++) {
+            Exploitation expltion = new Exploitation();
+            expltion.setRegistrationDate(LocalDate.of(1981, 01, 01));
+            expltion.setDescription("pretty one");
+            expltion.setLieuDit("AlARJA");
+            expltion.setZone(zRepo.findOneByName("Sahra"));
+            expltion.setSurface("20024");
+            expltion.setExpolitationName("Biladiii");
+            expltionRepo.save(expltion);
+        }
+    }
+
+    public void linkFellahExploitant() {
+
+        for (int j = 3; j < (cwil.length) / 2; j++) {
+            Random random = new Random();
+            CarteFellah fellah = cfRepo.findOneById(Long.valueOf(j));
+
+            //find a random exploitant
+            Exploitant exploitant = exploitatRepo.findOneById(Long.valueOf(j + 2));
+            String s12 = carteFellahService.findS12ByCarteFellahId(Long.valueOf(j));
+
+            exploitant.setCarteFellah(fellah);
+            exploitant.setNationalNumber(fellah.getNationalS12());
+            exploitatRepo.save(exploitant);
+
+
+        }
+    }
+
+    public void LinkExpoit() {
+        ExploitStatus[] exploitStatus = ExploitStatus.values();
+        Random random = new Random();
+        expltionRepo.findAll()
+                .forEach(extt -> {
+                    for (int i = 0; i < 3; i++) {
+                        int randomexploitant = random.nextInt(cwil.length);
+                        Long randoexploit = Long.valueOf(randomexploitant);
+                        Exploitant exploiant = exploitatRepo.findOneById(randoexploit);
+
+                        System.out.println("Value is///////////////////////////////////: " + exploitatRepo.findOneById(randoexploit));
+
+                        int indexStatus = random.nextInt(exploitStatus.length);
+                        Exploit exploit = Exploit
+                                .builder()
+                                .exploitStatus(exploitStatus[indexStatus])
+                                .activitiesStartDate(LocalDate.now().minusYears(indexStatus))
+                                .activitiesEndDate(LocalDate.now().minusMonths(indexStatus))
+                                .registrationDate(LocalDate.now().minusYears(indexStatus))
+                                .exploitant(exploiant)
+                                .exploitation(extt)
+                                .build();
+                        exploitRepo.save(exploit);
+
+                    }
+                });
     }
 }

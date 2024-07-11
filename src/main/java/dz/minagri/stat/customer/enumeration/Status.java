@@ -2,8 +2,8 @@
 package dz.minagri.stat.customer.enumeration;
 
 public enum Status {
-    Actif,
-    Inactif;
+    ACTIVE,
+    INACTIVE;
 
     public static Status from(String stat) {
         if(stat == null) {

@@ -11,6 +11,7 @@ import java.util.Collection;
 @Transactional
 public interface WilayaRepository extends JpaRepository<Wilaya,Long> {
     Wilaya findOneBynomWilaya(String nomWilaya);
+    Wilaya findByCodeWilaya(Long codeWilaya);
     /**
      * @param filterText
      * @return

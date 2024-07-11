@@ -36,20 +36,21 @@ public class ZoneController {
         );
     }
 
-    /**  @PostMapping(value="/save", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Zone saveZone(@Valid @RequestBody  Zone zone){
-        log.info("Inside saveZone method of ZoneController");
-        return zoneService.save(zone);
-
-    }
+    /**
+     * @PostMapping(value="/save", consumes = MediaType.APPLICATION_JSON_VALUE)
+     * public Zone saveZone(@Valid @RequestBody  Zone zone){
+     * log.info("Inside saveZone method of ZoneController");
+     * return zoneService.save(zone);
+     * <p>
+     * }
+     */
     @PostMapping("{id}")
-    public Optional<Zone> updateZone(@PathVariable("id") Long zoneId){
+    public Zone updateZone(@PathVariable("id") Long zoneId){
         log.info("Inside updateZone method of ZoneController");
-        Zone zone = zoneService.findZoneById(zoneId).get();
+        Zone zone = zoneService.findZoneById(zoneId);
         return zoneService.save(zone);
-
     }
-*/
+
 
     @GetMapping("/{id}")
     public Zone findZoneById(@PathVariable("id") Long zoneId){
