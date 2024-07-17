@@ -26,32 +26,39 @@ public class CarteFellahService {
     public Collection<CarteFellah> List(int limit) {
         log.info("fetching all fellahRepositoryServices:{}");
         return fellahRepository.findAll(PageRequest.of(0, limit)).getContent();
-
     }
 
     public CarteFellah save(CarteFellah carteFellah) {
         log.info("Save carteFellah inside fellahRepositoryServices:{}");
         return fellahRepository.save(carteFellah);
-
     }
 
     public CarteFellah get(Long id) {
         log.info("fetching carteFellah By id inside fellahRepositoryServices:{}", id);
         return fellahRepository.findById(id).get();
+    }
 
+    public CarteFellah getByS12(String S12) {
+        log.info("inside getByS12  of CarteFellahServices:{}", S12);
+        if (registredS12CarteFellah(S12) == true) {
+            return fellahRepository.getByNationalS12(S12);
+        } else return null;
+    }
+
+    public boolean registredS12CarteFellah(String s12) {
+        boolean carteFellahExists = fellahRepository.getByNationalS12(s12) != null ? true : false;
+        return carteFellahExists;
     }
 
     public CarteFellah update(CarteFellah carteFellah) {
         log.info("update carteFellah inside fellahRepositoryServices:{}", carteFellah.getNationalS12());
         return fellahRepository.save(carteFellah);
-
     }
 
     public Boolean deleteById(Long id) {
         log.info("delete Commune by id  inside fellahRepositoryServices:{}", id);
         fellahRepository.deleteById(id);
         return true;
-
     }
 
     public Wilaya findCarteFellahWilaya(Long id) {
@@ -87,6 +94,8 @@ public class CarteFellahService {
             carteFellah.setWilaya(willaya);
             log.info("Inside updateCarteFellahservice method of carteFellah.setWilaya" + willaya);
         }
+        save(carteFellah);
+
     }
 
     public String findS12ByCarteFellahId(Long id) {
@@ -98,5 +107,11 @@ public class CarteFellahService {
     public Collection<CarteFellah> listAllByWilaya(Long id) {
         log.info("all CarteFellah   inside listAllByWilaya");
         return fellahRepository.findCarteFellahByWilayaId(id);
+    }
+
+    public CarteFellah getCarteFellah(Long carteFellah_id) {
+        CarteFellah carteFellah = fellahRepository.findById(carteFellah_id)
+                .orElseThrow(() -> new IllegalArgumentException("carteFellah with id " + carteFellah_id + "does not exist"));
+        return carteFellah;
     }
 }

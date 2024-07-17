@@ -4,18 +4,16 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import dz.minagri.stat.location.entity.Wilaya;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 
-
 @Setter
 @Entity
 @EqualsAndHashCode
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
+@ToString
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Builder(toBuilder = true)
 @Table(
         name = "cartefellah"
@@ -23,21 +21,21 @@ import java.time.LocalDate;
 public class CarteFellah implements Serializable {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Version
     private int version;
 
-    @Column(name = "national_s12",unique = true)
+    @Column(name = "national_s12", unique = true)
     private String nationalS12;
 
-    @Column(name = "email",unique = true, nullable = true)
+    @Column(name = "email", unique = true, nullable = true)
     private String email;
     @ManyToOne
     @JoinColumn(name = "wilaya_id", nullable = true)
     private Wilaya wilaya;
 
-    @Column(name = "registration_date",columnDefinition = "DATE")
+    @Column(name = "registration_date", columnDefinition = "DATE")
     private LocalDate registrationDate;
 
     public CarteFellah(int version, String nationalS12, Wilaya wilaya, LocalDate registrationDate) {

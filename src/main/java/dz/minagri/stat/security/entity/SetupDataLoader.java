@@ -130,7 +130,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         //  createAddress();
         createFellah();
         createExploitant();
-        createExploitantion();
+        createExploitation();
         LinkExpoit();
         linkFellahExploitant();
         alreadySetup = true;
@@ -279,8 +279,6 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             commorl.addZone(zn);
         }
         cRepo.save(commorl);
-
-
     }
 
     public void createFellah() {
@@ -311,7 +309,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         }
     }
 
-    public void createExploitantion() {
+    public void createExploitation() {
         for (int j = 0; j < cwil.length; j++) {
             Exploitation expltion = new Exploitation();
             expltion.setRegistrationDate(LocalDate.of(1981, 01, 01));
@@ -335,7 +333,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             String s12 = carteFellahService.findS12ByCarteFellahId(Long.valueOf(j));
 
             exploitant.setCarteFellah(fellah);
-            exploitant.setNationalNumber(fellah.getNationalS12());
+            exploitant.setNumS12(fellah.getNationalS12());
             exploitatRepo.save(exploitant);
 
 

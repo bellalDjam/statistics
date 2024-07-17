@@ -19,22 +19,23 @@ public class ZoneService {
     private final ZoneRepository zoneRepository;
 
     public Collection<Zone> List(int limit) {
-        log.info("fetching all departmentServices:{}" );
-        return zoneRepository.findAll(PageRequest.of(0,limit)).getContent();
+        log.info("fetching all departmentServices:{}");
+        return zoneRepository.findAll(PageRequest.of(0, limit)).getContent();
 
     }
 
     public Collection<Zone> listAll() {
-        log.info("fetching all departmentServices:{}" );
+        log.info("fetching all departmentServices:{}");
         return zoneRepository.findAll();
 
     }
 
-    public Zone findZoneId(Long id){
+    public Zone findZoneId(Long id) {
         log.info("findOne Zone inside ZoneServices:{}");
         return zoneRepository.findById(id).get();
     }
-    public Zone save(Zone zone){
+
+    public Zone save(Zone zone) {
         log.info("Save Zone inside ZoneServices:{}");
         return zoneRepository.save(zone);
 
@@ -45,8 +46,9 @@ public class ZoneService {
         return zoneRepository.findZoneByCommuneId(idCommune);
 
     }
+
     public Zone findZoneById(Long zoneId) {
         log.info("findById inside  zoneServices:{}" + zoneId);
-        return zoneRepository.findById(zoneId).get();
+        return zoneRepository.findById(zoneId).orElseThrow(() -> new IllegalArgumentException("carteFellah with id " + zoneId + "does not exist"));
     }
 }
