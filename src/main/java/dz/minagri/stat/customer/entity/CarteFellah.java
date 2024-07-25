@@ -25,7 +25,6 @@ public class CarteFellah implements Serializable {
     private Long id;
     @Version
     private int version;
-
     @Column(name = "national_s12", unique = true)
     private String nationalS12;
 

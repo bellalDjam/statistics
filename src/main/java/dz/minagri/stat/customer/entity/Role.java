@@ -1,29 +1,36 @@
 package dz.minagri.stat.customer.entity;
 
+import dz.minagri.stat.customer.enumeration.RoleType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
+@Data
+@AllArgsConstructor
 @Getter
 @Setter
+@Builder
+@ToString
+@EqualsAndHashCode
+@NoArgsConstructor
 @Entity
-@Table(
-        name = "role"
-)
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@Table(name = "role")
 public class Role implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Version
     private int version;
+    @Column(unique = true, nullable = false)
+    @Enumerated(EnumType.STRING)
+    private RoleType roleType;
+    @Column(nullable = false)
+    private String description;
+    @OneToMany(targetEntity = Account.class, cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<Account> accounts;
 
 }

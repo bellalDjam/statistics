@@ -1,4 +1,4 @@
-package dz.minagri.stat.location.entity;
+package dz.minagri.stat.production.entity;
 
 import dz.minagri.stat.location.enumeration.EtatMauvHerb;
 import dz.minagri.stat.location.enumeration.EtatSanitaire;
@@ -9,7 +9,6 @@ import lombok.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-
 @Data
 @AllArgsConstructor
 @Getter
@@ -19,17 +18,14 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 @NoArgsConstructor
 @Entity
-@Table(
-        name = "exploitationglobalaspect"
-)
-public class ExploitationGlobalAspect implements Serializable {
-
+@Table(name = "aspectparcel")
+public class AspectParcel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Long id;
     @Version
     private int version;
-
     @Column(name = "etatsanitaire", nullable = true)
     @Enumerated(EnumType.STRING)
     private EtatSanitaire etatSanitaire;
@@ -45,8 +41,7 @@ public class ExploitationGlobalAspect implements Serializable {
     @Column(name = "record_date", columnDefinition = "DATE")
     private LocalDate recorddate;
 
-    @ManyToOne()
-    @JoinColumn(name = "exploitation_id", nullable = false)
-    private Exploitation exploitation;
-
+    @OneToOne()
+    @JoinColumn(name = "productionparcel_id", nullable = false)
+    private ProductionParcel productionparcel;
 }

@@ -1,11 +1,11 @@
 package dz.minagri.stat.location.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import dz.minagri.stat.commons.entity.AddressType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.io.Serializable;
 
 @Getter
@@ -43,7 +43,4 @@ public class Address implements Serializable {
     @Column(name = "isDefault")
     private Boolean isDefault;
 
-    @Column(name = "addressType")
-    @Enumerated(EnumType.STRING)
-    private AddressType addressType;
 }

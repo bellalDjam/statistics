@@ -1,21 +1,16 @@
 package dz.minagri.stat.location.entity;
 
-import dz.minagri.stat.customer.entity.Customer;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
+@AllArgsConstructor
 @Getter
 @Setter
+@Builder
+@ToString
+@NoArgsConstructor
 @Entity
 @Table(
         name = "location"
@@ -46,6 +41,4 @@ public class Location implements Serializable {
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
-    private List<Customer> customers = new ArrayList<>();
 }

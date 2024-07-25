@@ -1,25 +1,27 @@
 package dz.minagri.stat.location.entity;
 
 import dz.minagri.stat.customer.entity.Account;
-import dz.minagri.stat.customer.entity.Personne;
 import dz.minagri.stat.location.enumeration.RgaQuality;
+import dz.minagri.stat.production.entity.PreviewsProduction;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 
+@Data
+@AllArgsConstructor
 @Getter
 @Setter
+@Builder
+@ToString
+@EqualsAndHashCode
+@NoArgsConstructor
 @Entity
-@Table(
-        name = "rga"
-)
+@Table(name = "rga")
 public class Rga implements Serializable {
-
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Version
     private int version;
@@ -30,37 +32,30 @@ public class Rga implements Serializable {
     private String description;
 
     @OneToOne()
-    @JoinColumn(name ="account_id",nullable=false, insertable=false, updatable=false)
+    @JoinColumn(name = "account_id", nullable = false, insertable = false, updatable = false)
     private Account account;
 
     @OneToOne()
-    @JoinColumn(name ="personne_id",nullable=false, insertable=false, updatable=false)
-    private Personne manager;
+    @JoinColumn(name = "account_id", nullable = false, insertable = false, updatable = false)
+    private Account manager;
 
     @Enumerated(EnumType.STRING)
     private RgaQuality rgaQuality;
 
-    @Column(name = "opnening_date",columnDefinition = "DATE")
+    @Column(name = "opnening_date", columnDefinition = "DATE")
     private LocalDate opneningDate;
 
-    @Column(name = "closing_Date",columnDefinition = "DATE")
+    @Column(name = "closing_Date", columnDefinition = "DATE")
     private LocalDate closingDate;
 
-    @OneToOne(mappedBy="rga")
+    @OneToOne(mappedBy = "rga")
     private PreviewsProduction previewsProduction;
 
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "exploitation_id", nullable = false)
     private Exploitation exploitation;
-//
-//	@ManyToOne()
-//	@JoinColumn(name="zone_id")
-//	private Zone zone;
-//
-//	@ManyToOne()
-//	@JoinColumn(name="wilaya_id")
-//	private Wilaya wilaya;
+
 
 //	@OneToMany(mappedBy = "rga")
 //	private List<ProductionParcel> productionParcels;
