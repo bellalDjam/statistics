@@ -11,9 +11,7 @@ import lombok.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 ;
 
@@ -84,13 +82,12 @@ public class Account implements Serializable {
     private boolean nonExpired = true;
     @NotNull
     private boolean nonLocked = true;
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "account_role",
-            joinColumns = @JoinColumn(name = "account_Id"),
-            inverseJoinColumns = @JoinColumn(name = "role_Id")
-    )
-    private Set<Role> roles = new HashSet<Role>();
+    @ManyToMany
+    @JoinTable(name = "account_role",
+            joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "account_id", referencedColumnName = "id"))
+    private List<Role> role;
+
     @Enumerated(EnumType.STRING)
     private TypeAccount typeAccount;
     //	@Column(nullable = false)

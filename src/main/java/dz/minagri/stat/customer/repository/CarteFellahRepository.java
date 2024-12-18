@@ -17,12 +17,10 @@ public interface CarteFellahRepository extends JpaRepository<CarteFellah, Long> 
 
     CarteFellah findOneById(Long id);
 
-
     CarteFellah getByNationalS12(String s12);
 
     List<CarteFellah> findCarteFellahByWilayaId(Long id);
 
     void deleteById(CarteFellah carteFellah);
-
 
 }

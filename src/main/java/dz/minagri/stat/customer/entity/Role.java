@@ -30,7 +30,6 @@ public class Role implements Serializable {
     private RoleType roleType;
     @Column(nullable = false)
     private String description;
-    @OneToMany(targetEntity = Account.class, cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "role")
     private List<Account> accounts;
-
 }

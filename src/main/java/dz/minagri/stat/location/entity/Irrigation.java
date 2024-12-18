@@ -28,7 +28,7 @@ public class Irrigation implements Serializable {
     private Long id;
     @Version
     private int version;
-    private LocalDate dateRealisation;
+    private LocalDate realisationDate;
     private String name;
     private String otherEnergy;
     private int profondeur;
@@ -59,6 +59,6 @@ public class Irrigation implements Serializable {
     @Column(name = "dLon", nullable = true, unique = true)
     private Double dLon;
 
-    private double stockCapacity;
-    private double debit;
+    private Double stockCapacity;
+    private Double debit;
 }

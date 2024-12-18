@@ -12,16 +12,18 @@ import java.util.Optional;
 
 @Repository
 @Transactional
-public interface ZoneRepository extends JpaRepository<Zone,Long> {
+public interface ZoneRepository extends JpaRepository<Zone, Long> {
 
-     Zone save(Zone zone);
+    Zone save(Zone zone);
 
-     Optional<Zone> findById(Long id);
-     //void Delete (Long id);
-     List<Zone> findAll();
-     Page<Zone> findAll(Pageable pageable);
-     List<Zone> findZoneByCommuneId(Long commune);
+    Optional<Zone> findById(Long id);
 
+    //void Delete (Long id);
+    List<Zone> findAll();
+
+    Page<Zone> findAll(Pageable pageable);
+
+    List<Zone> findZoneByCommuneId(Long commune);
 
     Zone findOneByName(String name);
 }

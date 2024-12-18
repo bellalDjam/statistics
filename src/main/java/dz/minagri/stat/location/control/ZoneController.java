@@ -1,6 +1,5 @@
 package dz.minagri.stat.location.control;
 
-import dz.minagri.stat.location.entity.Commune;
 import dz.minagri.stat.location.entity.Exploitation;
 import dz.minagri.stat.location.entity.Zone;
 import dz.minagri.stat.location.service.CommuneService;
@@ -21,37 +20,14 @@ public class ZoneController {
     private final CommuneService communeService;
 
     @PostMapping
-    public Zone saveZoneService(@RequestParam String zoneName, Long communeId, String note, @RequestParam(required = false) List<Exploitation> exploitationList) {
-        Commune commune = communeService.get(communeId);
-        Zone zone = Zone.builder()
-                .commune(commune)
-                .name(zoneName)
-                .remarque(note)
-                .build();
-        return zoneService.save(zone);
+    public Zone saveZoneService(@RequestParam String zoneName,
+                                Long communeId,
+                                String note,
+                                @RequestParam(required = false) List<Exploitation> exploitationList) {
+
+        return zoneService.saveZone(communeId, note, exploitationList, zoneName);
     }
-   /* @PostMapping
-    public ResponseEntity<Response> SaveZone(@RequestBody @Valid Zone zone) {
 
-        return ResponseEntity.ok(
-                Response.builder()
-                        .timestamp(now())
-                        .data(of("zone", zoneService.save(zone)))
-                        .message("zone Created")
-                        .status(CREATED)
-                        .statusCode(CREATED.value())
-                        .build()
-        );
-    }*/
-
-    /**
-     * @PostMapping(value="/save", consumes = MediaType.APPLICATION_JSON_VALUE)
-     * public Zone saveZone(@Valid @RequestBody  Zone zone){
-     * log.info("Inside saveZone method of ZoneController");
-     * return zoneService.save(zone);
-     * <p>
-     * }
-     */
     @PutMapping("{id}")
     public Zone updateZone(@PathVariable("id") Long zoneId,
                            @RequestParam(required = false) String zoneName,
@@ -60,9 +36,8 @@ public class ZoneController {
                            @RequestParam(required = false) List<Exploitation> exploitationList) {
         log.info("Inside updateZone method of ZoneController");
         Zone zone = zoneService.findZoneById(zoneId);
-        return zoneService.save(zone);
+        return zoneService.updateZone(zoneId, communeId, note, exploitationList, zoneName);
     }
-
 
     @GetMapping("/{id}")
     public Zone findZoneById(@PathVariable("id") Long zoneId) {
@@ -76,10 +51,14 @@ public class ZoneController {
         return zoneService.listAll();
     }
 
-
     @GetMapping("list/{limit}")
     public Collection<Zone> getZones(@PathVariable("limit") int limit) {
         log.info("Inside List method of ZonesController");
         return zoneService.List(limit);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteZones(@PathVariable("id") Long zoneId) {
+        zoneService.deleteZoneById(zoneId);
     }
 }

@@ -19,30 +19,32 @@ public class CommuneService {
     private final CommuneRepository communeRepository;
 
     public Collection<Commune> List(int limit) {
-        log.info("fetching all CommuneServices:{}" );
-        return communeRepository.findAll(PageRequest.of(0,limit)).getContent();
+        log.info("fetching all CommuneServices:{}");
+        return communeRepository.findAll(PageRequest.of(0, limit)).getContent();
 
     }
-    public Commune save(Commune commune){
+
+    public Commune save(Commune commune) {
         log.info("Save Commune inside CommuneServices:{}");
         return communeRepository.save(commune);
 
     }
-    public Commune get(Long id){
-        log.info("fetching Commune By id inside CommuneServices:{}",id);
+
+    public Commune get(Long id) {
+        log.info("fetching Commune By id inside CommuneServices:{}", id);
         return communeRepository.findById(id).get();
 
     }
-    public Commune update(Commune commune){
-        log.info("update Commune inside CommuneServices:{}",commune.getName());
-        return communeRepository.save(commune);
 
+    public Commune update(Commune commune) {
+        log.info("update Commune inside CommuneServices:{}", commune.getName());
+        return communeRepository.save(commune);
     }
-    public Boolean deleteById(Long id){
-        log.info("delete Commune by id  inside CommuneServices:{}",id);
+
+    public Boolean deleteById(Long id) {
+        log.info("delete Commune by id  inside CommuneServices:{}", id);
         communeRepository.deleteById(id);
         return true;
-
     }
 
     public Collection<Commune> listAll() {
@@ -50,8 +52,9 @@ public class CommuneService {
         return communeRepository.findAll();
     }
 
-  /*  public Collection<Zone> listAllCommuneZone(Long idCommune) {
-        log.info("all Zone inside CommuneServices");
-
-    }*/
+    public Boolean communeExist(Commune Commune) {
+        log.info("communeExist inside CommuneServices");
+        boolean communeExis = Commune != null ? true : false;
+        return communeExis;
+    }
 }

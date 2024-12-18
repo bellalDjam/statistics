@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @Slf4j
@@ -49,4 +51,9 @@ public class RoleService {
         } else
             return ResponseEntity.unprocessableEntity().body("No Records Found");
     }
+
+    public List<Role> findAll() {
+        return roleRepository.findAll();
+    }
+
 }

@@ -1,6 +1,6 @@
 package dz.minagri.stat.customer.repository;
 
-import dz.minagri.stat.customer.entity.CarteFellah;
+import dz.minagri.stat.customer.entity.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,19 +10,19 @@ import java.util.Optional;
 
 @Repository
 @Transactional
-public interface CompanyRepository extends JpaRepository<CarteFellah, Long> {
-    Optional<CarteFellah> findById(Long id);
+public interface CompanyRepository extends JpaRepository<Company, Long> {
+    Optional<Company> findById(Long id);
 
-    List<CarteFellah> findAll();
+    List<Company> findAll();
 
-    CarteFellah findOneById(Long id);
+    Company findOneById(Long id);
+    
+    Company getByCompanyName(String name);
 
+    Company getBycompanyOfficialName(String officialname);
 
-    CarteFellah getByNationalS12(String s12);
+    List<Company> findByVat(String vat);
 
-    List<CarteFellah> findCarteFellahByWilayaId(Long id);
-
-    void deleteById(CarteFellah carteFellah);
-
+    void deleteById(Long id);
 
 }
