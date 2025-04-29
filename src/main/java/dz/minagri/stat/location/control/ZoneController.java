@@ -21,12 +21,12 @@ public class ZoneController {
 
     @PostMapping
     public Zone saveZoneService(@RequestParam String zoneName,
-                                Long communeId,
-                                String note,
+                                @RequestParam(required = false) Long communeId,
+                                @RequestParam(required = false) String note,
                                 @RequestParam(required = false) List<Exploitation> exploitationList) {
 
         return zoneService.saveZone(communeId, note, exploitationList, zoneName);
-    }
+   }
 
     @PutMapping("{id}")
     public Zone updateZone(@PathVariable("id") Long zoneId,

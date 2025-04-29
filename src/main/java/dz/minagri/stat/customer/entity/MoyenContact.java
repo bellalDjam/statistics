@@ -21,7 +21,7 @@ import java.util.List;
 public class MoyenContact implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Version
     private int version;

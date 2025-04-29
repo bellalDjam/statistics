@@ -64,7 +64,7 @@ public class ZoneService {
 
     public Zone findZoneById(Long zoneId) {
         log.info("findById inside zoneServices:{}" + zoneId);
-        return zoneRepository.findById(zoneId).orElseThrow(() -> new IllegalArgumentException("carteFellah with id " + zoneId + "does not exist"));
+        return zoneRepository.findById(zoneId).orElseThrow(() -> new IllegalArgumentException("zone with id " + zoneId + "does not exist"));
     }
 
     public void deleteZoneById(Long zoneId) {

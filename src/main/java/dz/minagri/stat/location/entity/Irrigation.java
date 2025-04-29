@@ -24,7 +24,7 @@ import java.time.LocalDate;
 @Entity(name = "irrigation")
 public class Irrigation implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Version
     private int version;

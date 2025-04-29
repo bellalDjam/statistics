@@ -49,7 +49,7 @@ public class AccountController {
                                  @RequestParam(required = false) String lastName,
                                  @RequestParam(required = false) LocalDate registrationDate,
                                  @RequestParam(required = false) String firstName,
-                                 @RequestParam(required = false) String usertName,
+                                 @RequestParam(required = false) String userName,
                                  @RequestParam(required = false) String createdBy,
                                  @RequestParam(required = false) LocalDate createdAt,
                                  @RequestParam(required = false) LocalDate birthDate,
@@ -58,7 +58,7 @@ public class AccountController {
                                  @RequestParam(required = false) Boolean nonLocked,
                                  @RequestParam(required = false) TypeAccount typeAccount,
                                  @RequestParam(required = false) Gender gender) {
-        return accountService.updateAccount(id, lastName, firstName, usertName,
+        return accountService.updateAccount(id, lastName, firstName, userName,
                 email, createdBy, createdAt,
                 birthDate, registrationDate,
                 manager, enabled, nonLocked, typeAccount,
